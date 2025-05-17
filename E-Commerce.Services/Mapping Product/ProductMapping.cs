@@ -18,11 +18,13 @@ namespace E_Commerce.Services.Mapping_Product
             CreateMap<ProductVM, Product>()
             .ForMember(dest => dest.PictureUrl, opt => opt.Ignore()) // لأنه يتم رفعه يدويًا
             .ForMember(dest => dest.ProductBrand, opt => opt.Ignore())
-            .ForMember(dest => dest.ProductType, opt => opt.Ignore());
+            .ForMember(dest => dest.ProductType, opt => opt.Ignore())
+            ; // لو بتعالجه يدويًا من Image مثلاً;
 
             CreateMap<UpdateProductVM, Product>()
                 .ForMember(dest => dest.ProductBrand, opt => opt.Ignore())
-                .ForMember(dest => dest.ProductType, opt => opt.Ignore());
+                .ForMember(dest => dest.ProductType, opt => opt.Ignore())
+                .ForMember(dest => dest.PictureUrl, opt => opt.Ignore()); // لو بتعالجه يدويًا من Image مثلاً;
 
             CreateMap<Product, ProductVM>()
                 .ForMember(dest => dest.Image, opt => opt.Ignore()) // لا يُعاد من الـ Entity

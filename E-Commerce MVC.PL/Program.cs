@@ -3,6 +3,7 @@ using E_Commerce.Data.Context;
 using E_Commerce.Services.FormFiles;
 using E_Commerce.Services.Implementation;
 using E_Commerce.Services.Interfaces;
+using E_Commerce.Services.Mapping_Product;
 using E_Commerce_.Repository.Interfaces;
 using E_Commerce_.Repository.Repository;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +31,8 @@ namespace E_Commerce_MVC.PL
 
             });
             builder.Services.AddAutoMapper(typeof(Program));
+            builder.Services.AddAutoMapper(typeof(ProductMapping));
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             #region Cloudinary settings
             builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
