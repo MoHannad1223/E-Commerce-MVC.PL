@@ -1,91 +1,66 @@
+@model List<E_Commerce_MVC.PL.Models.CartItem>
 @{
     ViewData["Title"] = "Wishlist";
 }
 
-<section class="py-5">
-    <div class="container">
-        <h2 class="fw-bold mb-4" style="font-size:2.2rem;">Wishlist (4)</h2>
-        <div class="d-flex justify-content-end mb-4">
-            <button class="btn btn-outline-secondary">Move All To Bag</button>
-        </div>
-        <div class="row g-4">
-            <!-- Card 1 -->
-            <div class="col-md-3 position-relative">
+<h2 class="fw-bold mb-4">My Wishlist</h2>
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">Your wishlist is empty.</div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-3">
                 <div class="flash-card bg-white p-3 rounded-3 position-relative shadow-sm">
-                    <span class="flash-discount">-36%</span>
                     <div class="flash-card-icons d-flex flex-column align-items-end position-absolute" style="top: 16px; right: 16px; gap: 8px;">
-                        <button class="icon-btn"><i class="fa fa-trash"></i></button>
+                        <button class="icon-btn remove-wishlist-btn" data-product-id="@item.Id"><i class="fa fa-trash"></i></button>
                     </div>
                     <div class="product-image-container mb-3">
-                        <img src="~/images/gucci-bag.jpg" alt="Gucci Duffle Bag" class="img-fluid">
+                        <img src="@item.ImageUrl" alt="@item.Name" class="img-fluid">
                         <div class="add-to-cart-overlay">
-                            <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                            <button type="button" class="btn btn-link text-white p-0" onclick="addToCart(@item.Id, '@item.Name', @item.Price, '@item.ImageUrl')">
+                                <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                            </button>
                         </div>
                     </div>
-                    <div class="fw-bold mb-1">Gucci Duffle Bag</div>
+                    <div class="fw-bold mb-1">@item.Name</div>
                     <div class="mb-1">
-                        <span class="text-danger fw-bold">$960</span>
-                        <span class="text-muted text-decoration-line-through ms-2">$1160</span>
+                        <span class="text-danger fw-bold">$@item.Price.ToString("0.00")</span>
                     </div>
                 </div>
             </div>
-            <!-- Card 2 -->
-            <div class="col-md-3 position-relative">
-                <div class="flash-card bg-white p-3 rounded-3 position-relative shadow-sm">
-                    <div class="flash-card-icons d-flex flex-column align-items-end position-absolute" style="top: 16px; right: 16px; gap: 8px;">
-                        <button class="icon-btn"><i class="fa fa-trash"></i></button>
-                    </div>
-                    <div class="product-image-container mb-3">
-                        <img src="~/images/cooler.jpg" alt="RGB Liquid CPU Cooler" class="img-fluid">
-                        <div class="add-to-cart-overlay">
-                            <i class="fa-solid fa-cart-shopping"></i> Add to Cart
-                        </div>
-                    </div>
-                    <div class="fw-bold mb-1">RGB liquid CPU Cooler</div>
-                    <div class="mb-1">
-                        <span class="text-danger fw-bold">$1960</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Card 3 -->
-            <div class="col-md-3 position-relative">
-                <div class="flash-card bg-white p-3 rounded-3 position-relative shadow-sm">
-                    <div class="flash-card-icons d-flex flex-column align-items-end position-absolute" style="top: 16px; right: 16px; gap: 8px;">
-                        <button class="icon-btn"><i class="fa fa-trash"></i></button>
-                    </div>
-                    <div class="product-image-container mb-3">
-                        <img src="~/images/gamepad.jpg" alt="GPII Shooter USB Gamepad" class="img-fluid">
-                        <div class="add-to-cart-overlay">
-                            <i class="fa-solid fa-cart-shopping"></i> Add to Cart
-                        </div>
-                    </div>
-                    <div class="fw-bold mb-1">GPII Shooter USB Gamepad</div>
-                    <div class="mb-1">
-                        <span class="text-danger fw-bold">$550</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Card 4 -->
-            <div class="col-md-3 position-relative">
-                <div class="flash-card bg-white p-3 rounded-3 position-relative shadow-sm">
-                    <div class="flash-card-icons d-flex flex-column align-items-end position-absolute" style="top: 16px; right: 16px; gap: 8px;">
-                        <button class="icon-btn"><i class="fa fa-trash"></i></button>
-                    </div>
-                    <div class="product-image-container mb-3">
-                        <img src="~/images/jacket.jpg" alt="Quilted Satin Jacket" class="img-fluid">
-                        <div class="add-to-cart-overlay">
-                            <i class="fa-solid fa-cart-shopping"></i> Add to Cart
-                        </div>
-                    </div>
-                    <div class="fw-bold mb-1">Quilted Satin Jacket</div>
-                    <div class="mb-1">
-                        <span class="text-danger fw-bold">$750</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        }
     </div>
-</section>
+}
+
+@section Scripts {
+<script>
+    $(document).on('click', '.remove-wishlist-btn', function(e) {
+        e.preventDefault();
+        var $btn = $(this);
+        var productId = $btn.data('product-id');
+        $.ajax({
+            url: '/Wishlist/RemoveFromWishlist',
+            type: 'POST',
+            data: { id: productId },
+            success: function(response) {
+                if (response.success) {
+                    $btn.closest('.col-md-3').fadeOut(300, function() { $(this).remove(); });
+                    showToast(response.message);
+                } else {
+                    showToast('Error removing from wishlist');
+                }
+            },
+            error: function() {
+                showToast('Error removing from wishlist');
+            }
+        });
+    });
+</script>
+}
 
 @section Styles {
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">

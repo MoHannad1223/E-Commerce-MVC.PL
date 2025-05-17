@@ -436,6 +436,42 @@
         body{
             margin-bottom: 0 !important;
         }
+        .btn-close:focus {
+            box-shadow: none !important;
+            outline: none !important;
+        }
+        .btn-close:hover {
+            opacity: 0.75 !important;
+        }
+        .btn-close-white:focus {
+            box-shadow: none !important;
+            outline: none !important;
+        }
+        .btn-close-white:hover {
+            opacity: 0.75 !important;
+        }
+        button:focus, .btn:focus, .btn-link:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        .dropdown-menu .dropdown-item.lang-option {
+            color: #111 !important;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none !important;
+        }
+        .dropdown-menu .dropdown-item.lang-option .flag-icon {
+            font-size: 1.2em;
+            margin-right: 6px;
+        }
+        .btn-link {
+            text-decoration: none !important;
+        }
+        .btn-link:hover, .btn-link:focus {
+            text-decoration: none !important;
+        }
     </style>
     @RenderSection("Styles", required: false)
 </head>
@@ -449,10 +485,8 @@
                 English
             </button>
             <ul class="dropdown-menu dropdown-menu-end dropdown-a" aria-labelledby="languageDropdown">
-                <li><a class="dropdown-item" href="#">English</a></li>
-                <li><a class="dropdown-item" href="#">Arabic</a></li>
-                <li><a class="dropdown-item" href="#">French</a></li>
-                <li><a class="dropdown-item" href="#">Spanish</a></li>
+                <li><a class="dropdown-item lang-option" href="#"><span class="flag-icon"><img src="https://flagcdn.com/gb.svg" alt="England Flag" width="24" height="18" style="object-fit:cover;vertical-align:middle;"></span> English</a></li>
+                <li><a class="dropdown-item lang-option" href="#"><span class="flag-icon"><img src="https://flagcdn.com/sa.svg" alt="Saudi Arabia Flag" width="24" height="18" style="object-fit:cover;vertical-align:middle;"></span> Arabic</a></li>
             </ul>
         </div>
     </div>
@@ -474,9 +508,18 @@
                     <li class="nav-item">
                         <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "About" ? "active" : "")" href="/About">About</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "SignUp" ? "active" : "")" href="/SignUp">Sign Up</a>
-                    </li>
+                    @if (Context.Session.GetString("IsLoggedIn") == "true")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Login/Logout">Logout</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "SignUp" ? "active" : "")" href="/SignUp">Sign Up</a>
+                        </li>
+                    }
                 </ul>
                 <div class="navbar-actions d-flex align-items-center me-5 navend">
                     <form class="search-bar d-flex align-items-center">
@@ -497,6 +540,20 @@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="cartToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <i class="bi bi-check-circle me-2"></i>
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close" style="outline: none; box-shadow: none;"></button>
+            </div>
+            <div class="toast-body">
+                Product added to cart successfully!
+            </div>
+        </div>
     </div>
 
     <footer style="background:#111; color:#fff; padding: 48px 0 0 0; font-family: inherit;">
@@ -574,6 +631,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const navbar = document.getElementById('mainNavbar');
@@ -591,6 +649,81 @@
             }
 
             window.addEventListener('scroll', onScroll);
+        });
+
+        function showToast(message) {
+            const toast = document.getElementById('cartToast');
+            const toastBody = toast.querySelector('.toast-body');
+            toastBody.textContent = message;
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+        }
+
+        function addToCart(id, name, price, imageUrl) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            $.ajax({
+                url: '/Cart/AddToCart',
+                type: 'POST',
+                data: {
+                    Id: id,
+                    Name: name,
+                    Price: price,
+                    ImageUrl: imageUrl,
+                    Quantity: 1
+                },
+                success: function(response) {
+                    if (response.success) {
+                        showToast(response.message);
+                    } else {
+                        showToast('Error adding product to cart');
+                    }
+                },
+                error: function() {
+                    showToast('Error adding product to cart');
+                }
+            });
+        }
+
+        // Wishlist heart functionality
+        $(document).on('click', '.wishlist-btn', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var $btn = $(this);
+            var $icon = $btn.find('i');
+            var productId = $btn.data('product-id');
+            // Find product details from the card
+            var $card = $btn.closest('.flash-card, .product-card');
+            var name = $card.find('.fw-bold.mb-1').text().trim();
+            var priceText = $card.find('.text-danger.fw-bold').first().text().replace(/[^\d.]/g, '');
+            var price = parseFloat(priceText);
+            var imageUrl = $card.find('img').attr('src');
+
+            $.ajax({
+                url: '/Wishlist/AddToWishlist',
+                type: 'POST',
+                data: {
+                    Id: productId,
+                    Name: name,
+                    Price: price,
+                    ImageUrl: imageUrl,
+                    Quantity: 1
+                },
+                success: function (response) {
+                    if (response.success) {
+                        $icon.removeClass('fa-regular').addClass('fa-solid').css('color', '#e74c3c');
+                        $btn.addClass('active-wishlist-heart');
+                        // Optionally show a toast
+                        showToast(response.message);
+                    } else {
+                        showToast('Error adding to wishlist');
+                    }
+                },
+                error: function () {
+                    showToast('Error adding to wishlist');
+                }
+            });
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)

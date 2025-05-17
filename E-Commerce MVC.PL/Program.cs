@@ -31,8 +31,6 @@ namespace E_Commerce_MVC.PL
 
             });
             builder.Services.AddAutoMapper(typeof(Program));
-            builder.Services.AddAutoMapper(typeof(ProductMapping));
-            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             #region Cloudinary settings
             builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
@@ -63,6 +61,9 @@ namespace E_Commerce_MVC.PL
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            // Add session middleware before authorization
+            app.UseSession();
 
             app.UseAuthorization();
 
@@ -101,4 +102,3 @@ namespace E_Commerce_MVC.PL
 //    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 //app.Run();
-

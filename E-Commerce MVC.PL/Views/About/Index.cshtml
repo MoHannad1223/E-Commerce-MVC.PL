@@ -78,9 +78,11 @@
       <div class="col-lg-4 col-md-6">
         <div class="card border-0 shadow-sm team-card">
           <div class="d-flex flex-column align-items-center pt-4 pb-3">
-            <img src="https://images.unsplash.com/photo-1577495508048-b635879837f1" class="team-img mb-3" alt="John Smith">
-            <h3 class="h5 mb-1 team-name">John Smith</h3>
-            <p class="text-muted mb-2">Founder & Chairman</p>
+            <div class="team-icon mb-3">
+              <i class="bi bi-person-circle"></i>
+            </div>
+            <h3 class="h5 mb-1 team-name">Ahmed Tamer</h3>
+            <p class="text-muted mb-2">Fullstack.NET developer</p>
             <div class="d-flex justify-content-center gap-3">
               <a href="#" class="team-social"><i class="bi bi-twitter"></i></a>
               <a href="#" class="team-social"><i class="bi bi-instagram"></i></a>
@@ -92,9 +94,11 @@
       <div class="col-lg-4 col-md-6">
         <div class="card border-0 shadow-sm team-card">
           <div class="d-flex flex-column align-items-center pt-4 pb-3">
-            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80" class="team-img mb-3" alt="Sarah Johnson">
-            <h3 class="h5 mb-1 team-name">Sarah Johnson</h3>
-            <p class="text-muted mb-2">Managing Director</p>
+            <div class="team-icon mb-3">
+              <i class="bi bi-person-circle"></i>
+            </div>
+            <h3 class="h5 mb-1 team-name">Mohamed Ali</h3>
+            <p class="text-muted mb-2">Fullstack.NET developer</p>
             <div class="d-flex justify-content-center gap-3">
               <a href="#" class="team-social"><i class="bi bi-twitter"></i></a>
               <a href="#" class="team-social"><i class="bi bi-instagram"></i></a>
@@ -106,9 +110,11 @@
       <div class="col-lg-4 col-md-6">
         <div class="card border-0 shadow-sm team-card">
           <div class="d-flex flex-column align-items-center pt-4 pb-3">
-            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a" class="team-img mb-3" alt="Mike Wilson">
-            <h3 class="h5 mb-1 team-name">Mike Wilson</h3>
-            <p class="text-muted mb-2">Product Designer</p>
+            <div class="team-icon mb-3">
+              <i class="bi bi-person-circle"></i>
+            </div>
+            <h3 class="h5 mb-1 team-name">Mohanad Ali</h3>
+            <p class="text-muted mb-2">Fullstack.NET developer</p>
             <div class="d-flex justify-content-center gap-3">
               <a href="#" class="team-social"><i class="bi bi-twitter"></i></a>
               <a href="#" class="team-social"><i class="bi bi-instagram"></i></a>
@@ -197,24 +203,35 @@
       background: #fff;
     }
     .team-card:hover {
-      box-shadow: 0 8px 32px rgba(233,69,96,0.18);
-      transform: translateY(-8px) scale(1.04);
+      box-shadow: 0 4px 16px rgba(233,69,96,0.12);
+      transform: translateY(-2px);
       background: #fff0f3;
     }
-    .team-img {
-      width: 120px;
-      height: 120px;
-      object-fit: cover;
+    .team-icon {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border-radius: 50%;
-      border: 4px solid #fff;
+      border: 3px solid #fff;
       box-shadow: 0 2px 8px rgba(233,69,96,0.10);
       background: #f8f9fa;
-      transition: box-shadow 0.2s, border 0.2s, transform 0.2s;
+      transition: all 0.3s ease;
     }
-    .team-card:hover .team-img {
-      box-shadow: 0 4px 24px rgba(233,69,96,0.18);
-      border: 4px solid #e94560;
-      transform: scale(1.08);
+    .team-icon i {
+      font-size: 2.9rem;
+      color: #e94560;
+      transition: all 0.3s ease;
+    }
+    /* .team-card:hover .team-icon {
+      box-shadow: 0 2px 12px rgba(233,69,96,0.15);
+      border: 3px solid #e94560;
+      transform: scale(1.02);
+    } */
+    .team-card:hover .team-icon i {
+      color: #111;
+      transform: scale(1.05);
     }
     .team-name {
       color: #e94560;
