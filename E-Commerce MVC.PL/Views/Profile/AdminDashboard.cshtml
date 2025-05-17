@@ -1,0 +1,33 @@
+@model IEnumerable<E_Commerce.Services.Model_View.ProductVM>
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h2 class="fw-bold mb-4">Admin Dashboard</h2>
+<a href="/Product/Create" class="btn btn-success mb-4">Create New Product</a>
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td><img src="@product.Image" alt="@product.Name" style="width:60px;height:60px;object-fit:contain;background:#f5f5f5;"></td>
+                <td>@product.Name</td>
+                <td>$@product.Price.ToString("0.00")</td>
+                <td>@product.StockQuantity</td>
+                <td>
+                    <a href="/Product/Edit/@product.Id" class="btn btn-warning btn-sm me-2">Edit</a>
+                    <a href="/Product/Delete/@product.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table> 

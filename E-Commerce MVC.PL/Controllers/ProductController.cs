@@ -23,6 +23,8 @@ namespace E_Commerce_MVC.PL.Controllers
 
         public async Task<IActionResult> Create()
         {
+            if (HttpContext.Session.GetString("IsAdmin") != "true")
+                return RedirectToAction("Index", "Login");
             ViewBag.Brands = await _productService.GetAllBrandsAsync();
             ViewBag.Types = await _productService.GetAllTypesAsync();
             return View();
@@ -32,6 +34,8 @@ namespace E_Commerce_MVC.PL.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductVM model)
         {
+            if (HttpContext.Session.GetString("IsAdmin") != "true")
+                return RedirectToAction("Index", "Login");
             if (!ModelState.IsValid)
             {
                 ViewBag.Brands = await _productService.GetAllBrandsAsync();
@@ -46,6 +50,8 @@ namespace E_Commerce_MVC.PL.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
+            if (HttpContext.Session.GetString("IsAdmin") != "true")
+                return RedirectToAction("Index", "Login");
             if (id <= 0)
                 return BadRequest("Invalid product Id");
 
@@ -73,6 +79,8 @@ namespace E_Commerce_MVC.PL.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UpdateProductVM model)
         {
+            if (HttpContext.Session.GetString("IsAdmin") != "true")
+                return RedirectToAction("Index", "Login");
             if (!ModelState.IsValid)
             {
                 ViewBag.Brands = await _productService.GetAllBrandsAsync();
@@ -101,6 +109,8 @@ namespace E_Commerce_MVC.PL.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
+            if (HttpContext.Session.GetString("IsAdmin") != "true")
+                return RedirectToAction("Index", "Login");
             var product = await _productService.GetProductByIdAsync(id);
             if (product == null)
                 return NotFound();
@@ -112,6 +122,8 @@ namespace E_Commerce_MVC.PL.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (HttpContext.Session.GetString("IsAdmin") != "true")
+                return RedirectToAction("Index", "Login");
             await _productService.DeleteProductAsync(id);
             TempData["Success"] = "Product deleted successfully.";
             return RedirectToAction(nameof(Index));

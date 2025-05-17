@@ -30,6 +30,16 @@ namespace E_Commerce_MVC.PL
 
             });
             builder.Services.AddAutoMapper(typeof(Program));
+
+            // Add session support
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             #region Cloudinary settings
             builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
@@ -60,6 +70,9 @@ namespace E_Commerce_MVC.PL
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            // Add session middleware before authorization
+            app.UseSession();
 
             app.UseAuthorization();
 
@@ -98,4 +111,3 @@ namespace E_Commerce_MVC.PL
 //    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 //app.Run();
-
